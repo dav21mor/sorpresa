@@ -1,134 +1,199 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>¿Quieres ser mi San Valentín?</title>
+<meta charset="UTF-8">
+<title>¿Te atreves a ser mi San Valentín?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CLAVE para móviles -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { box-sizing: border-box; }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
+    overflow: hidden;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
+.card {
+    background: white;
+    padding: 30px 22px;
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    position: relative;
+    z-index: 10; /* 🔑 SIEMPRE encima */
+}
 
-        .card {
-            background: white;
-            padding: 30px 20px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 380px;
-        }
+.heart {
+    font-size: 48px;
+    animation: beat 1s infinite;
+}
 
-        .heart {
-            font-size: 48px;
-            animation: beat 1s infinite;
-        }
+h1 {
+    color: #ff2e63;
+    font-size: 26px;
+    margin: 15px 0;
+}
 
-        h1 {
-            color: #ff4b5c;
-            font-size: 26px;
-            margin: 15px 0;
-        }
+p {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 25px;
+}
 
-        p {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 25px;
-        }
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    height: 70px;
+    position: relative;
+}
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            position: relative;
-            height: 70px;
-        }
+button {
+    font-size: 18px;
+    padding: 14px 22px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    min-width: 120px;
+    z-index: 20;
+}
 
-        button {
-            font-size: 18px;
-            padding: 14px 22px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            min-width: 110px;
-        }
+#yes {
+    background: linear-gradient(135deg, #ff2e63, #ff416c);
+    color: white;
+}
 
-        #yes {
-            background-color: #ff4b5c;
-            color: white;
-        }
+#no {
+    background: #ddd;
+}
 
-        #yes:active {
-            transform: scale(0.95);
-        }
+canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1; /* 👈 SIEMPRE detrás */
+    pointer-events: none;
+}
 
-        #no {
-            background-color: #ddd;
-            position: absolute;
-        }
-
-        @keyframes beat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-    </style>
+@keyframes beat {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+</style>
 </head>
+
 <body>
 
+<canvas id="confetti"></canvas>
+
+<audio id="music" loop playsinline preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2c94673a9b.mp3" type="audio/mpeg">
+</audio>
+
 <div class="card" id="card">
-    <div class="heart">❤️</div>
-    <h1>¿Quieres ser mi San Valentín?</h1>
+    <div class="heart">❤️‍🔥</div>
+    <h1>¿Te atreves a ser mi San Valentín?</h1>
     <p>
-        Prometo risas, momentos lindos  
-        y hacerte sonreír 💕
+        Advertencia ⚠️<br>
+        Puede causar sonrisas, miradas intensas  
+        y ganas de no soltarnos 😏
     </p>
 
     <div class="buttons">
-        <button id="yes" onclick="accept()">Sí 💖</button>
-        <button id="no" ontouchstart="moveNo()" onmouseover="moveNo()">No 😅</button>
+        <button id="yes">Sí 😈💖</button>
+        <button id="no">No 🙈</button>
     </div>
 </div>
 
 <script>
-    function accept() {
-        document.body.innerHTML = `
-            <div style="
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                height:100vh;
-                background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-                font-family:'Segoe UI',sans-serif;
-                text-align:center;
-                padding:20px;
-            ">
-                <h1 style="color:white;font-size:32px;">
-                    ¡Sabía que dirías que sí! 💘🥰
-                </h1>
-            </div>
-        `;
-    }
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const music = document.getElementById("music");
 
-    function moveNo() {
-        const noBtn = document.getElementById("no");
-        const x = Math.random() * 180;
-        const y = Math.random() * 60;
-        noBtn.style.transform = `translate(${x}px, ${y}px)`;
+// 🎵 iOS-safe audio unlock
+document.addEventListener("touchstart", () => {
+    music.play().catch(()=>{});
+}, { once: true });
+
+function vibrate() {
+    if (navigator.vibrate) {
+        navigator.vibrate([100,50,150]);
     }
+}
+
+// 🎉 CONFETTI
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let pieces = [];
+
+function startConfetti() {
+    pieces = Array.from({length:120}, () => ({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height - canvas.height,
+        r: Math.random()*6 + 4,
+        d: Math.random()*30 + 10,
+        c: `hsl(${Math.random()*360},100%,60%)`
+    }));
+    animate();
+}
+
+function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+        ctx.beginPath();
+        ctx.fillStyle = p.c;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+        p.y += 4;
+        if (p.y > canvas.height) p.y = -10;
+    });
+    requestAnimationFrame(animate);
+}
+
+// ✅ BOTÓN SÍ (CLICK + TOUCH)
+yesBtn.addEventListener("click", accept);
+yesBtn.addEventListener("touchend", accept);
+
+function accept() {
+    vibrate();
+    music.volume = 0.7;
+    music.play().catch(()=>{});
+    startConfetti();
+
+    document.getElementById("card").innerHTML = `
+        <div class="heart">💘</div>
+        <h1>Ahora ya no hay marcha atrás 😏</h1>
+        <p style="font-size:20px;">
+            Este San Valentín va a estar 🔥
+        </p>
+    `;
+}
+
+// 😈 BOTÓN NO (SE MUEVE DESPUÉS DEL TOQUE)
+noBtn.addEventListener("touchend", moveNo);
+noBtn.addEventListener("mouseover", moveNo);
+
+function moveNo() {
+    const x = Math.random()*140 - 70;
+    const y = Math.random()*40 - 20;
+    noBtn.style.transform = `translate(${x}px,${y}px)`;
+}
+
+window.onresize = () => {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+};
 </script>
 
 </body>
