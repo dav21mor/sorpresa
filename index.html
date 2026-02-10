@@ -29,7 +29,7 @@ body {
     max-width: 380px;
     text-align: center;
     position: relative;
-    z-index: 10; /* 🔑 SIEMPRE encima */
+    z-index: 10;
 }
 
 .heart {
@@ -47,6 +47,7 @@ p {
     font-size: 18px;
     color: #444;
     margin-bottom: 25px;
+    line-height: 1.4;
 }
 
 .buttons {
@@ -54,7 +55,6 @@ p {
     justify-content: center;
     gap: 15px;
     height: 70px;
-    position: relative;
 }
 
 button {
@@ -64,7 +64,6 @@ button {
     border-radius: 30px;
     cursor: pointer;
     min-width: 120px;
-    z-index: 20;
 }
 
 #yes {
@@ -79,7 +78,7 @@ button {
 canvas {
     position: fixed;
     inset: 0;
-    z-index: 1; /* 👈 SIEMPRE detrás */
+    z-index: 1;
     pointer-events: none;
 }
 
@@ -92,9 +91,11 @@ canvas {
 
 <body>
 
+<!-- 🎉 CONFETTI -->
 <canvas id="confetti"></canvas>
 
-<audio id="music" loop playsinline preload="auto">
+<!-- 🎵 AUDIO (iOS SAFE) -->
+<audio id="music" loop playsinline>
     <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2c94673a9b.mp3" type="audio/mpeg">
 </audio>
 
@@ -103,8 +104,8 @@ canvas {
     <h1>¿Te atreves a ser mi San Valentín?</h1>
     <p>
         Advertencia ⚠️<br>
-        Puede causar sonrisas, miradas intensas  
-        y ganas de no soltarnos 😏
+        Puede causar sonrisas peligrosas,  
+        miradas largas y ganas de repetir 😏
     </p>
 
     <div class="buttons">
@@ -118,18 +119,14 @@ const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
 const music = document.getElementById("music");
 
-// 🎵 iOS-safe audio unlock
-document.addEventListener("touchstart", () => {
-    music.play().catch(()=>{});
-}, { once: true });
-
+/* 📳 Vibración */
 function vibrate() {
     if (navigator.vibrate) {
-        navigator.vibrate([100,50,150]);
+        navigator.vibrate([100, 50, 150]);
     }
 }
 
-// 🎉 CONFETTI
+/* 🎉 CONFETTI */
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
@@ -138,56 +135,58 @@ canvas.height = innerHeight;
 let pieces = [];
 
 function startConfetti() {
-    pieces = Array.from({length:120}, () => ({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height - canvas.height,
-        r: Math.random()*6 + 4,
-        d: Math.random()*30 + 10,
-        c: `hsl(${Math.random()*360},100%,60%)`
+    pieces = Array.from({length: 140}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        c: `hsl(${Math.random() * 360},100%,60%)`
     }));
-    animate();
+    animateConfetti();
 }
 
-function animate() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+function animateConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     pieces.forEach(p => {
         ctx.beginPath();
         ctx.fillStyle = p.c;
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
         p.y += 4;
         if (p.y > canvas.height) p.y = -10;
     });
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animateConfetti);
 }
 
-// ✅ BOTÓN SÍ (CLICK + TOUCH)
+/* ✅ BOTÓN SÍ (AUDIO 100% FUNCIONAL EN MÓVIL) */
 yesBtn.addEventListener("click", accept);
 yesBtn.addEventListener("touchend", accept);
 
 function accept() {
+    // 🎵 AUDIO: SOLO AQUÍ (regla iOS)
+    music.currentTime = 0;
+    music.volume = 0.8;
+    music.play();
+
     vibrate();
-    music.volume = 0.7;
-    music.play().catch(()=>{});
     startConfetti();
 
     document.getElementById("card").innerHTML = `
         <div class="heart">💘</div>
-        <h1>Ahora ya no hay marcha atrás 😏</h1>
+        <h1>Ahora sí… ya no hay vuelta atrás 😏</h1>
         <p style="font-size:20px;">
             Este San Valentín va a estar 🔥
         </p>
     `;
 }
 
-// 😈 BOTÓN NO (SE MUEVE DESPUÉS DEL TOQUE)
+/* 😈 BOTÓN NO (escapa DESPUÉS del toque) */
 noBtn.addEventListener("touchend", moveNo);
 noBtn.addEventListener("mouseover", moveNo);
 
 function moveNo() {
-    const x = Math.random()*140 - 70;
-    const y = Math.random()*40 - 20;
-    noBtn.style.transform = `translate(${x}px,${y}px)`;
+    const x = Math.random() * 120 - 60;
+    const y = Math.random() * 40 - 20;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
 }
 
 window.onresize = () => {
