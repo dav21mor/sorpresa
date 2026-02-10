@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>¿Quieres ser mi San Valentín?</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #ff4b5c;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .buttons {
+            margin-top: 30px;
+            position: relative;
+            height: 60px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #yes {
+            background-color: #ff4b5c;
+            color: white;
+            margin-right: 15px;
+        }
+
+        #yes:hover {
+            background-color: #ff1f3d;
+        }
+
+        #no {
+            background-color: #ccc;
+            position: absolute;
+        }
+
+        .heart {
+            font-size: 40px;
+            animation: beat 1s infinite;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="heart">❤️</div>
+    <h1>¿Quieres ser mi San Valentín?</h1>
+    <p>Prometo risas, buenos momentos  
+       y hacerte muy feliz 💕</p>
+
+    <div class="buttons">
+        <button id="yes" onclick="accept()">Sí 💖</button>
+        <button id="no" onmouseover="moveNo()">No 😅</button>
+    </div>
+</div>
+
+<script>
+    function accept() {
+        document.body.innerHTML = `
+            <div style="
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                height:100vh;
+                background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+                font-family:'Segoe UI',sans-serif;
+                text-align:center;
+            ">
+                <h1 style="color:white;font-size:40px;">
+                    ¡Sabía que dirías que sí! 💘🥰
+                </h1>
+            </div>
+        `;
+    }
+
+    function moveNo() {
+        const noBtn = document.getElementById("no");
+        const x = Math.random() * 250;
+        const y = Math.random() * 80;
+        noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+</script>
+
+</body>
+</html>
